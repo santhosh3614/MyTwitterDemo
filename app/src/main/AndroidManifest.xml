@@ -3,26 +3,26 @@
     package="com.megaminds.mytwitterdemo" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name=".MyApp"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-     <uses-permission android:name="android.permission.INTERNET" />
-           </intent-filter>
+
         </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="d01bcb18551ed180543a79af15331f30a7f05993" />
+
         <activity
             android:name="com.mopub.mobileads.MoPubActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" />
@@ -35,7 +35,23 @@
         <activity
             android:name="com.mopub.mobileads.MraidVideoPlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".InitialActivity"
+            android:label="@string/title_activity_initial"
+            android:theme="@style/AppTheme.NoActionBar" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>

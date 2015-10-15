@@ -6,9 +6,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -22,51 +25,52 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.services.StatusesService;
+import com.twitter.sdk.android.tweetui.SearchTimeline;
+import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
+import com.twitter.sdk.android.tweetui.TweetView;
+import com.twitter.sdk.android.tweetui.UserTimeline;
 
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-    private static final String TWITTER_KEY = "LZrFUBdtQq1tMGJXJfuYVJGtW";
-    private static final String TWITTER_SECRET = "mNc33OyTU3M7slrShuWmRg84KpA3Cg8lhJfBVo0AR8hrkV5agd";
-    private TwitterLoginButton loginButton;
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private LinearLayout mLinear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-        Fabric.with(this, new Twitter(authConfig), new Crashlytics(), new MoPub());
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+//        mLinear=(LinearLayout)findViewById(R.id.mLinear);
 
+        UserTimeline timeline = new UserTimeline.Builder().screenName("santhosh").build();
+//        final SearchTimeline timeline = new SearchTimeline.Builder()
+//                .query("RGVzoomin")
+//                .build();
+        final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(this)
+                .setTimeline(timeline)
+                .build();
+        ((ListView)findViewById(android.R.id.list)).setAdapter(adapter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        loginButton = (TwitterLoginButton) findViewById(R.id.login_button);
-        loginButton.setCallback(new Callback<TwitterSession>() {
-            @Override
-            public void success(Result<TwitterSession> result) {
-                // Do something with result, which provides a TwitterSession for making API calls
-                TwitterSession data = result.data;
+        Log.d(TAG,"Item Count:"+adapter.getCount());
 
-                Toast.makeText(MainActivity.this, "User Name:"+data.getUserName()+" userId:"+data.getUserId()
-                        +" AccesToken:"+data.getAuthToken().token, Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void failure(TwitterException exception) {
-                // Do something on failure
-            }
-        });
+//        TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
+//// Can also use Twitter directly: Twitter.getApiClient()
+//        StatusesService statusesService = twitterApiClient.getStatusesService();
+//        statusesService.show(524971209851543553L, null, null, null, new Callback<Tweet>() {
+//            @Override
+//            public void success(Result<Tweet> result) {
+//                mLinear.addView(new TweetView(MainActivity.this,result.data));
+//            }
+//
+//            public void failure(TwitterException exception) {
+//                //Do something on failure
+//            }
+//        });
     }
 
     @Override
@@ -84,10 +88,4 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Pass the activity result to the login button.
-        loginButton.onActivityResult(requestCode, resultCode, data);
-    }
 }
